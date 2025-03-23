@@ -18,3 +18,23 @@ services:
     depends_on:
       - postgres
     restart: unless-stopped
+  envoy-grpc-to-json:
+    image: envoyproxy/envoy:v1.21.0
+    volumes:
+      - ./envoy_grpc_to_json.yaml:/etc/envoy/envoy_grpc_to_json.yaml
+      - ./appointment.pb:/data/appointment.pb
+      - .:/data
+    ports:
+      - "9099:9099"
+      - "8089:8089"
+    command: [ "envoy", "-c", "/etc/envoy/envoy_grpc_to_json.yaml", "--log-level", "debug" ]
+  envoy-grpcweb:
+    image: envoyproxy/envoy:v1.21.0
+    volumes:
+      - ./envoy_d_grpcweb.yaml:/etc/envoy/envoy_d_grpcweb.yaml
+      - ./appointment.pb:/data/appointment.pb
+      - .:/data
+    ports:
+      - "9199:9199"
+      - "8099:8099"
+    command: [ "envoy", "-c", "/etc/envoy/envoy_d_grpcweb.yaml", "--log-level", "debug" ]

@@ -123,3 +123,29 @@ grpcurl -d @ -plaintext localhost:9091 com.codewiz.doctor.DoctorService/Chat <<E
 }
 EOM
 ```
+
+## Envoy json to grpc transcoding
+```bash
+http POST localhost:8089/v1/appointments \
+  doctor_id:=3 \
+  patient_id:=5 \
+  appointment_date="2025-02-15" \
+  appointment_time="14:30" \
+  reason="Annual check-up"
+```
+
+```bash
+curl -X GET "http://localhost:8089/v1/appointments/availability?doctor_id=10"
+```
+
+## Envoy gRPC-Web transcoding
+```bash
+
+curl --location 'http://localhost:8099/com.codewiz.appointment.AppointmentService/BookAppointment' \
+--header 'Accept: application/grpc-web-text' \
+--header 'Cache-Control: no-cache' \
+--header 'Connection: keep-alive' \
+--header 'Content-Type: application/grpc-web-text' \
+--header 'Pragma: no-cache' \
+--data 'AAAAAB0IAhACGgoyMDI1LTA0LTExIgUxMTozMCoEZXdydw=='
+```

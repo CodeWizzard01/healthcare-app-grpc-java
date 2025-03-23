@@ -4,10 +4,20 @@ package com.codewiz.appointment;
 
 option java_multiple_files = true;
 
+import "google/api/annotations.proto";
+
 service AppointmentService {
-  rpc BookAppointment (BookAppointmentRequest) returns (BookAppointmentResponse); //unary rpc
-  rpc GetAppointmentAvailability (AppointmentAvailabilityRequest) returns (stream AppointmentAvailabilityResponse); //server streaming rpc
-}
+  rpc BookAppointment (BookAppointmentRequest) returns (BookAppointmentResponse) {
+    option (google.api.http) = {
+      post: "/v1/appointments"
+      body: "*"
+    };
+  }
+  rpc GetAppointmentAvailability (AppointmentAvailabilityRequest) returns (stream AppointmentAvailabilityResponse) {
+    option (google.api.http) = {
+      get: "/v1/appointments/availability"
+    };
+  }}
 
 message BookAppointmentRequest {
   int64 doctor_id = 1;

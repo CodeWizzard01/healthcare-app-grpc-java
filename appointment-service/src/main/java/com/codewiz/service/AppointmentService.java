@@ -59,41 +59,54 @@ public class AppointmentService extends AppointmentServiceGrpc.AppointmentServic
     @Override
     public void getAppointmentAvailability(AppointmentAvailabilityRequest request, StreamObserver<AppointmentAvailabilityResponse> responseObserver) {
         List<LocalDateTime> hardcodedAppointments = Arrays.asList(
-                LocalDateTime.of(2025, 1, 7, 9, 0),
-                LocalDateTime.of(2025, 1, 8, 9, 30),
-                LocalDateTime.of(2025, 1, 8, 10, 0),
-                LocalDateTime.of(2025, 1, 8, 10, 30),
-                LocalDateTime.of(2025, 1, 9, 11, 0),
-                LocalDateTime.of(2025, 1, 11, 11, 30),
-                LocalDateTime.of(2025, 1, 11, 13, 0),
-                LocalDateTime.of(2025, 1, 12, 13, 30),
-                LocalDateTime.of(2025, 1, 12, 14, 0),
-                LocalDateTime.of(2025, 1, 13, 14, 30)
-        );
-        Random random = new Random();
-        int i=0;
-        while(i<10){
-            Collections.shuffle(hardcodedAppointments,random);
-            var slots =   hardcodedAppointments.stream()
-                    .limit(2)
-                    .map(dateTime -> AppointmentSlot.newBuilder()
-                            .setAppointmentDate(dateTime.toLocalDate().toString())
-                            .setAppointmentTime(dateTime.toLocalTime().toString())
-                            .build())
-                    .collect(Collectors.toList());
-            var response = AppointmentAvailabilityResponse.newBuilder()
-                    .addAllResponses(slots)
-                    .setAvailabilityAsOf(LocalDateTime.now().toString())
-                    .build();
-            responseObserver.onNext(response);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            i++;
-        }
-        responseObserver.onCompleted();
+                LocalDateTime.of(2025, 4, 7, 9, 0),
+                LocalDateTime.of(2025, 4, 8, 9, 30),
+                LocalDateTime.of(2025, 4, 8, 10, 0),
+                LocalDateTime.of(2025, 4, 8, 10, 30),
+                LocalDateTime.of(2025, 4, 9, 11, 0),
+                LocalDateTime.of(2025, 4, 11, 11, 30),
+                LocalDateTime.of(2025, 4, 11, 13, 0),
+                LocalDateTime.of(2025, 4, 12, 13, 30),
+                LocalDateTime.of(2025, 4, 12, 14, 0),
+                LocalDateTime.of(2025, 4, 13, 14, 30),
+                LocalDateTime.of(2025, 5, 7, 9, 0),
+                LocalDateTime.of(2025, 5, 8, 9, 30),
+                LocalDateTime.of(2025, 5, 8, 10, 0),
+                LocalDateTime.of(2025, 5, 8, 10, 30),
+                LocalDateTime.of(2025, 5, 9, 11, 0),
+                LocalDateTime.of(2025, 5, 11, 11, 30),
+                LocalDateTime.of(2025, 5, 11, 13, 0),
+                LocalDateTime.of(2025, 5, 12, 13, 30),
+                LocalDateTime.of(2025, 5, 12, 14, 0),
+                LocalDateTime.of(2025, 5, 13, 14, 30)
 
+        );
+
+        Random random = new Random();
+        int i = 0;
+        try {
+            while (i < 100) {
+                Collections.shuffle(hardcodedAppointments, random);
+                var slots =   hardcodedAppointments.stream()
+                        .limit(5)
+                        .map(dateTime -> AppointmentSlot.newBuilder()
+                                .setAppointmentDate(dateTime.toLocalDate().toString())
+                                .setAppointmentTime(dateTime.toLocalTime().toString())
+                                .setIsAvailable(true)
+                                .build())
+                        .collect(Collectors.toList());
+                var response = AppointmentAvailabilityResponse.newBuilder()
+                        .addAllResponses(slots)
+                        .setAvailabilityAsOf(LocalDateTime.now().toString())
+                        .build();
+                responseObserver.onNext(response);
+                Thread.sleep(2000);
+                i++;
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            responseObserver.onCompleted();
+        }
     }
 }
